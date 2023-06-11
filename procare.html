@@ -1,0 +1,70 @@
+<script type="text/javascript">
+    RED.nodes.registerType('procare-account', {
+        category: 'config',
+        credentials: {
+            email:    { type: 'text' },
+            password: { type: 'password' }
+        },
+        defaults: {
+            name: { required: false, value: '' }
+        },
+        label: function() {
+            return this.name || 'Procare Account'
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="procare-account">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Optional">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-email"><i class="fa fa-user"></i> Email</label>
+        <input type="text" id="node-config-input-email" placeholder="Required">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-password"><i class="fa fa-key"></i> Password</label>
+        <input type="password" id="node-config-input-password" placeholder="Required">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="procare-account">
+    <p><strong>Procare Account configuration node</strong></p>
+    <hr>
+    <ul>
+        <li><strong>Email</strong> - Enter the email you use to authenticate to Procare
+        <li><strong>Password</strong> - Enter the password you use to authenticate to Procare
+    </ul>
+</script>
+
+
+
+<script type="text/javascript">
+    RED.nodes.registerType('procare-mediaurls', {
+        category: 'procare',
+        defaults: {
+            name:    { required: false, value: '' },
+            account: { required: true, value: '', type: 'procare-account' }
+        },
+        inputs: 1,
+        outputs: 1,
+        palatteLabel: 'Procare Media URLs'
+        label: function() {
+            return this.name || 'Procare Media URLs'
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="procare-mediaurls">
+    <div class="form-row">
+        <label for="node-input-conf"><i class="fa fa-tag"></i> Account</label>
+        <input type="text" id="node-input-config" placeholder="Required">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="procare-mediaurls">
+    <p><strong>Procare Media URLs</strong></p>
+    <hr>
+    <p>Retreives data from any daily activities</p>
+</script>
