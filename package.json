@@ -1,6 +1,6 @@
 {
-  "name": "@steveredden/node-red-contrib-procare",
-  "version": "1.0.0",
+  "name": "node-red-contrib-procare",
+  "version": "1.0.1",
   "description": "Node for retreiving Procare (daycare) media urls and comments",
   "main": "procare.js",
   "directories": {
