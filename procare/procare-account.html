@@ -37,39 +37,3 @@
         <li><strong>Password</strong> - Enter the password you use to authenticate to Procare
     </ul>
 </script>
-
-
-
-<script type="text/javascript">
-    RED.nodes.registerType('procare-mediaurls', {
-        category: 'procare',
-        color: '#e5a0fa',
-        defaults: {
-            name:    { required: false, value: '' },
-            account: { required: true, value: '', type: 'procare-account' }
-        },
-        inputs: 1,
-        outputs: 1,
-        palatteLabel: 'Procare Media URLs',
-        label: function() {
-            return this.name || 'Procare Media URLs'
-        }
-    });
-</script>
-
-<script type="text/html" data-template-name="procare-mediaurls">
-    <div class="form-row">
-        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-config-input-name" placeholder="Optional">
-    </div>
-    <div class="form-row">
-        <label for="node-input-conf"><i class="fa fa-key"></i> Account</label>
-        <input id="node-input-conf">
-    </div>
-</script>
-
-<script type="text/html" data-help-name="procare-mediaurls">
-    <p><strong>Procare Media URLs</strong></p>
-    <hr>
-    <p>Retreives data from any daily activities</p>
-</script>
