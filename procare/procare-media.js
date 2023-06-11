@@ -81,8 +81,7 @@ function _fetchMessages(headers, date) {
                                         "basename": _getPhotoGuid(activity.photo_url),
                                         "comment": activity.comment,
                                         "datetime": activity.activity_time,
-                                        "headers": headers,
-                                        "url": activity.photo_url,
+                                        "url": activity.photo_url
                                     }
                                 )
                             })
