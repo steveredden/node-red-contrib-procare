@@ -43,7 +43,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('procare-mediaurls', {
         category: 'procare',
-        color: '#1f1a18',
+        color: '#e5a0fa',
         defaults: {
             name:    { required: false, value: '' },
             account: { required: true, value: '', type: 'procare-account' }
@@ -59,8 +59,12 @@
 
 <script type="text/html" data-template-name="procare-mediaurls">
     <div class="form-row">
-        <label for="node-input-conf"><i class="fa fa-tag"></i> Account</label>
-        <input type="text" id="node-input-config" placeholder="Required">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Optional">
+    </div>
+    <div class="form-row">
+        <label for="node-input-conf"><i class="fa fa-key"></i> Account</label>
+        <input id="node-input-conf">
     </div>
 </script>
 
