@@ -1,19 +1,19 @@
 const uri = "https://api-school.procareconnect.com";
 
-module.exports = function (RED) {
+module.exports = function(RED) {
 
-    function procareAccount(input) {
+    function ProcareAccount(input) {
         RED.nodes.createNode(this, input);
     }
 
-    RED.nodes.registerType("procare-account", procareAccount, {
+    RED.nodes.registerType("procare-account", ProcareAccount, {
         credentials: {
             "email":    { type: 'text' },
             "password": { type: 'password' }
         }
     })
 
-    function procareMedia(input) {
+    function ProcareMedia(input) {
         RED.nodes.createNode(this, input);
         this.conf = RED.nodes.getNode(input.conf)
 
@@ -31,7 +31,7 @@ module.exports = function (RED) {
         });
     }
 
-    RED.nodes.registerType("procare-mediaurls", procareMedia);
+    RED.nodes.registerType("procare-mediaurls", ProcareMedia);
     
 }
 
