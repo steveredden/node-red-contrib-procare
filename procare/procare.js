@@ -1,5 +1,3 @@
-const uri = "https://api-school.procareconnect.com";
-
 module.exports = function(RED) {
 
     function ProcareAccount(input) {
