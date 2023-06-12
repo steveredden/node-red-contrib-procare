@@ -4,9 +4,9 @@ module.exports = function(RED) {
 
     function ProcareMedia(input) {
         RED.nodes.createNode(this, input);
-        this.conf = RED.nodes.getNode(input.conf)
-        this.debug(`Authenticating as ${this.conf.credentials.email}`)
-        
+        this.conf = RED.nodes.getNode(input.conf);
+        this.debug(`Authenticating as ${this.conf.credentials.email}`);
+
         var node = this;
 
         node.on('input', function(msg) {
