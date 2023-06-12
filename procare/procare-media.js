@@ -5,7 +5,7 @@ module.exports = function(RED) {
     function ProcareMedia(input) {
         RED.nodes.createNode(this, input);
         this.conf = RED.nodes.getNode(input.conf)
-
+        this.debug(`Authenticating as ${this.conf.credentials.email}`)
         var node = this;
 
         node.on('input', function() {
@@ -26,11 +26,9 @@ module.exports = function(RED) {
 
 function _getAuthToken(node) {
     const body = JSON.stringify({
-        email: node.conf.credentials.email,
-        password: node.conf.credentials.password
+        "email"   : node.conf.credentials.email,
+        "password": node.conf.credentials.password
     });
-
-    node.debug(`Authenticating as ${email}...`)
 
     fetch(`${uri}/api/web/auth/`, {
         method: "POST",
@@ -41,18 +39,16 @@ function _getAuthToken(node) {
     })
     .then(response => response.json())
     .then(authResp => {
-        node.log("Successfully generated authentication token");
         return authResp.user.auth_token;
     });
     
-    node.error("Failed to generate authentication token");
     return null;
 }
 
 function _makeHeaders(authToken) {
     return {
-        Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json"
+        "Authorization": `Bearer ${authToken}`,
+        "Content-Type" : "application/json"
     };
 }
 
@@ -83,11 +79,11 @@ function _fetchMessages(headers, date) {
                             .then(base64String => {
                                 messages.push(
                                     {
-                                        "base64": base64String,
+                                        "base64"  : base64String,
                                         "basename": _getPhotoGuid(activity.photo_url),
-                                        "comment": activity.comment,
+                                        "comment" : activity.comment,
                                         "datetime": activity.activity_time,
-                                        "url": activity.photo_url
+                                        "url"     : activity.photo_url
                                     }
                                 )
                             })
