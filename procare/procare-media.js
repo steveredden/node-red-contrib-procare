@@ -6,16 +6,20 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, input);
         this.conf = RED.nodes.getNode(input.conf)
         this.debug(`Authenticating as ${this.conf.credentials.email}`)
+        
         var node = this;
 
-        node.on('input', function() {
-            const token = _getAuthToken(node)
+        node.on('input', function(msg) {
 
-            if (token == null) {
-                return
+            this.msg = msg;
+
+            this.token = _getAuthToken(node);
+
+            if (this.token == null) {
+                return;
             }
 
-            var messages = _fetchMessages(_makeHeaders(token), _getDateString())
+            var messages = _fetchMessages(_makeHeaders(this.token), _getDateString())
             node.send([messages]);
         });
     }
