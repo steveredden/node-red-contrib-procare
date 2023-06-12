@@ -1,3 +1,5 @@
+const uri = "https://api-school.procareconnect.com"
+
 module.exports = function(RED) {
 
     function ProcareMedia(input) {
@@ -37,9 +39,11 @@ function _getAuthToken(node) {
     })
     .then(response => response.json())
     .then(authResp => {
+        this.log("Successfully generated authentication token");
         return authResp.user.auth_token;
     });
     
+    this.error("Failed to generate authentication token");
     return null;
 }
 
@@ -104,6 +108,7 @@ function _getPhotoGuid(url) {
     if (matches && matches.length > 1) {
         return matches[1];
     } else {
+        this.error("Failed to identify photo name")
         return null;
     }
 }
