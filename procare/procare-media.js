@@ -30,6 +30,8 @@ function _getAuthToken(node) {
         password: node.conf.credentials.password
     });
 
+    node.debug(`Authenticating as ${email}...`)
+
     fetch(`${uri}/api/web/auth/`, {
         method: "POST",
         body: body,
@@ -39,11 +41,11 @@ function _getAuthToken(node) {
     })
     .then(response => response.json())
     .then(authResp => {
-        this.log("Successfully generated authentication token");
+        node.log("Successfully generated authentication token");
         return authResp.user.auth_token;
     });
     
-    this.error("Failed to generate authentication token");
+    node.error("Failed to generate authentication token");
     return null;
 }
 
