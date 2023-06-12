@@ -5,7 +5,6 @@ module.exports = function(RED) {
     function ProcareMedia(input) {
         RED.nodes.createNode(this, input);
         this.conf = RED.nodes.getNode(input.conf);
-        this.debug(`Authenticating as ${this.conf.credentials.email}`);
 
         var node = this;
 
@@ -13,13 +12,13 @@ module.exports = function(RED) {
 
             this.msg = msg;
 
-            this.token = _getAuthToken(node);
+            this.token = _getAuthToken(this.conf.credentials.email, this.conf.credentials.password);
 
             if (this.token == null) {
                 return;
             }
 
-            var messages = _fetchMessages(_makeHeaders(this.token), _getDateString())
+            let messages = _fetchMessages(_makeHeaders(this.token), _getDateString())
             node.send([messages]);
         });
     }
@@ -28,10 +27,10 @@ module.exports = function(RED) {
     
 }
 
-function _getAuthToken(node) {
+function _getAuthToken(email, password) {
     const body = JSON.stringify({
-        "email"   : node.conf.credentials.email,
-        "password": node.conf.credentials.password
+        "email"   : email,
+        "password": password
     });
 
     fetch(`${uri}/api/web/auth/`, {
