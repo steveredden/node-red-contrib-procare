@@ -109,7 +109,7 @@ function _getPhotoGuid(url) {
     if (matches && matches.length > 1) {
         return matches[1];
     } else {
-        this.error("Failed to identify photo name")
+        console.error("Failed to identify photo name")
         return null;
     }
 }
