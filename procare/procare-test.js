@@ -12,26 +12,33 @@ module.exports = function(RED) {
 
             this.msg = msg;
 
-            const body = JSON.stringify({
-                "email"   : this.conf.credentials.email,
-                "password": this.conf.credentials.password
-            });
-        
-            fetch(`${uri}/api/web/auth/`, {
-                method: "POST",
-                body: body,
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(response => response.json())
-                .then(authResp => {
-                    msg.authToken = authResp.user.auth_token;
-                    node.send(msg);
-            });
+            const authToken = _getAuthToken(node)
+            msg.authToken = authToken;
+            node.send(msg);
         });
     }
 
     RED.nodes.registerType("procare-test", ProcareTest);
     
+}
+
+function _getAuthToken(node) {
+    const body = JSON.stringify({
+        "email"   : node.conf.credentials.email,
+        "password": node.conf.credentials.password
+    });
+
+    fetch(`${uri}/api/web/auth/`, {
+        method: "POST",
+        body: body,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+        .then(response => response.json())
+        .then(authResp => {
+            return authResp.user.auth_token;
+        });
+    
+    return null;
 }

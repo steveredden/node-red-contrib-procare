@@ -40,10 +40,10 @@ function _getAuthToken(email, password) {
             "Content-Type": "application/json"
         }
     })
-    .then(response => response.json())
-    .then(authResp => {
-        return authResp.user.auth_token;
-    });
+        .then(response => response.json())
+        .then(authResp => {
+            return authResp.user.auth_token;
+        });
     
     return null;
 }
