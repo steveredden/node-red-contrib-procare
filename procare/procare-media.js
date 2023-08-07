@@ -1,4 +1,5 @@
 const uri = "https://api-school.procareconnect.com"
+const date = new Date().toISOString().split("T")[0];   // ex. 2023-06-05T10:36:39 -> 2023-06-05
 
 module.exports = function(RED) {
 
@@ -10,16 +11,63 @@ module.exports = function(RED) {
 
         node.on('input', function(msg) {
 
-            this.msg = msg;
+            const body = JSON.stringify({
+                "email"   : this.conf.credentials.email,
+                "password": this.conf.credentials.password
+            });
+        
+            fetch(`${uri}/api/web/auth/`, {
+                method: "POST",
+                body: body,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => response.json())
+                .then(authResp => {
+                    this.authToken = authResp.user.auth_token;
 
-            this.token = _getAuthToken(this.conf.credentials.email, this.conf.credentials.password);
+                    if ( null != this.authToken ) {
+                        const headers = {
+                            "Authorization": `Bearer ${this.authToken}`,
+                            "Content-Type" : "application/json"
+                        }
 
-            if (this.token == null) {
-                return;
-            }
+                        var messages = [];
 
-            let messages = _fetchMessages(_makeHeaders(this.token), _getDateString())
-            node.send([messages]);
+                        fetch(`${uri}/api/web/parent/kids/`, {
+                            headers: headers
+                        })
+                            .then(response => response.json())
+                            .then(kidsResp => {
+                                kidsResp.kids.forEach(kid => {
+                                fetch(
+                                    `${uri}/api/web/parent/daily_activities/?kid_id=${kid.id}&filters[daily_activity][date_to]=${date}&filters[daily_activity][date_from]=${date}&page=1`,
+                                    { headers: headers }
+                                )
+                                    .then(response => response.json())
+                                    .then(activities => {
+                                    activities.daily_activities.forEach(activity => {
+                                        if ( activity.photo_url != null ) {
+                                            _loadImageAsBase64(activity.photo_url, headers)
+                                                .then(base64String => {
+                                                    messages.push(
+                                                        {
+                                                            "base64"  : base64String,
+                                                            "basename": _getPhotoGuid(activity.photo_url),
+                                                            "comment" : activity.comment,
+                                                            "datetime": activity.activity_time,
+                                                            "url"     : activity.photo_url
+                                                        }
+                                                    )
+                                                })
+                                        }
+                                    });
+                                });
+                            });
+                        });
+                    }
+                });
         });
     }
 
@@ -27,77 +75,9 @@ module.exports = function(RED) {
     
 }
 
-function _getAuthToken(email, password) {
-    const body = JSON.stringify({
-        "email"   : email,
-        "password": password
-    });
-
-    fetch(`${uri}/api/web/auth/`, {
-        method: "POST",
-        body: body,
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-        .then(response => response.json())
-        .then(authResp => {
-            return authResp.user.auth_token;
-        });
-    
-    return null;
-}
-
-function _makeHeaders(authToken) {
-    return {
-        "Authorization": `Bearer ${authToken}`,
-        "Content-Type" : "application/json"
-    };
-}
-
-function _getDateString() {
-    const today = new Date();
-    return today.toISOString().split("T")[0];   // ex. 2023-06-05T10:36:39 -> 2023-06-05
-}
-
 function _fetchMessages(headers, date) {
 
-    var messages = [];
-
-    fetch(`${uri}/api/web/parent/kids/`, {
-        headers: headers
-    })
-        .then(response => response.json())
-        .then(kidsResp => {
-            kidsResp.kids.forEach(kid => {
-            fetch(
-                `${uri}/api/web/parent/daily_activities/?kid_id=${kid.id}&filters[daily_activity][date_to]=${date}&filters[daily_activity][date_from]=${date}&page=1`,
-                { headers: headers }
-            )
-                .then(response => response.json())
-                .then(activities => {
-                activities.daily_activities.forEach(activity => {
-                    if ( activity.photo_url != null ) {
-                        _loadImageAsBase64(activity.photo_url, headers)
-                            .then(base64String => {
-                                messages.push(
-                                    {
-                                        "base64"  : base64String,
-                                        "basename": _getPhotoGuid(activity.photo_url),
-                                        "comment" : activity.comment,
-                                        "datetime": activity.activity_time,
-                                        "url"     : activity.photo_url
-                                    }
-                                )
-                            })
-                            .catch(error => {
-                                console.error("Error:", error);
-                            });
-                    }
-                });
-            });
-        });
-    });
+    
 
     return messages;
 }

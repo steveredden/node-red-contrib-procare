@@ -12,9 +12,27 @@ module.exports = function(RED) {
 
             this.msg = msg;
 
-            const authToken = _getAuthToken(node)
-            msg.authToken = authToken;
-            node.send(msg);
+            const body = JSON.stringify({
+                "email"   : this.conf.credentials.email,
+                "password": this.conf.credentials.password
+            });
+        
+            fetch(`${uri}/api/web/auth/`, {
+                method: "POST",
+                body: body,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => response.json())
+                .then(authResp => {
+                    msg.authtoken =  authResp.user.auth_token;
+
+                    node.send(msg);
+                });
+
+
+            
         });
     }
 
@@ -23,22 +41,10 @@ module.exports = function(RED) {
 }
 
 function _getAuthToken(node) {
-    const body = JSON.stringify({
-        "email"   : node.conf.credentials.email,
-        "password": node.conf.credentials.password
-    });
 
-    fetch(`${uri}/api/web/auth/`, {
-        method: "POST",
-        body: body,
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-        .then(response => response.json())
-        .then(authResp => {
-            return authResp.user.auth_token;
-        });
+    console.log("i made it")
+
+    
     
     return null;
 }
